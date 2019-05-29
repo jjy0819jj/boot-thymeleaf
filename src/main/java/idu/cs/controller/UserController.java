@@ -19,8 +19,10 @@ import idu.cs.domain.User;
 import idu.cs.exception.ResourceNotFoundException;
 import idu.cs.repository.UserRepository;
 
-@Controller
-public class UserController {
+@Controller 
+// Spring Famework에게 이 클래스로 부터 작성된 객체는 Controller 역할을 함을 알려줌
+// Spring 이 이 클래스로부터 Bean 객체를 생성해서 등록할 수 있음
+public class UserController { 
 	@Autowired UserRepository userRepo; // Dependency Injection
 	
 	@GetMapping("/")
@@ -47,12 +49,29 @@ public class UserController {
 		}
 		//userRepo.save(user);
 		session.setAttribute("user", sessionUser);
+		return "index";
+	}
+	
+	@PostMapping("/logout")
+	public String logoutUser(@Valid User user, HttpSession session) {
+		System.out.println("login process : " + user.getUserId());
+		User sessionUser = userRepo.findByUserId(user.getUserId());
+		if(sessionUser == null) {
+			System.out.println("id error");
+			return "redirect:/user-login";
+		}
+		if(!sessionUser.getUserPw().equals(user.getUserPw())) {
+			System.out.println("pw error");
+			return "redirect:/user-login";
+		}
+		//userRepo.save(user);
+		session.setAttribute("user", sessionUser);
 		return "/";
 	}
 	
 	@GetMapping("/user-regist")
 	public String getRegForm(Model model) {
-		return "form";
+		return "register";
 	}
 	
 	
@@ -64,7 +83,10 @@ public class UserController {
 	
 	@PostMapping("/users")
 	public String createUser(@Valid User user, Model model) {
-		userRepo.save(user);
+		if(userRepo.save(user) != null)
+			System.out.println("등록 성공");
+		else
+			System.out.println("등록 실패");
 		model.addAttribute("users", userRepo.findAll());
 		return "redirect:/users";
 	}
