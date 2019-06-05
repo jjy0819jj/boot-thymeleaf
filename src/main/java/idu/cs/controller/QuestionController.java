@@ -25,7 +25,7 @@ import idu.cs.service.UserService;
 @Controller 
 // Spring Famework에게 이 클래스로 부터 작성된 객체는 Controller 역할을 함을 알려줌
 // Spring 이 이 클래스로부터 Bean 객체를 생성해서 등록할 수 있음
-public class UserController { 
+public class QuestionController { 
 	@Autowired UserService userService;
 	
 	@GetMapping("/")

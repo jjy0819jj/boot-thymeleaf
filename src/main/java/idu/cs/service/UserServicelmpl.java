@@ -30,7 +30,20 @@ public class UserServicelmpl implements UserService {
 		}
 		return userEntity.buildDomain();
 	}
-
+	
+	@Override
+	public User getUserById(long id) {
+		UserEntity entity = null;
+		try {
+			entity = repository.findById(id).orElseThrow(() ->
+			 new ResourceNotFoundException("not found: " + id));
+		} catch (ResourceNotFoundException e) {
+			e.printStackTrace();
+		}
+		User user = entity.buildDomain();
+		return user;
+	}
+	
 	@Override
 	public User getUserByUserId(String userId) {
 		// TODO Auto-generated method stub
@@ -85,8 +98,9 @@ public class UserServicelmpl implements UserService {
 
 	@Override
 	public void updateUser(User user) {
-		// TODO Auto-generated method stub
-
+		UserEntity entity = new UserEntity();
+		entity.buildEntity(user);
+		repository.save(entity);
 	}
 
 	@Override
