@@ -2,14 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Registration Form</title>
-	<th:block th:include="fragments/header"></th:block>
-	<script type="text/javascript" src="js/main.js"></script>
+<title>Registration Form</title>
+<th:block th:include="fragments/header"></th:block>
 </head>
 
-<body>
-
-<th:block th:include="fragments/header-nav"></th:block>
+<th:block th:include="fragments/nav"></th:block>
 
 <!-- breadcrumb start-->
     <section class="breadcrumb breadcrumb_bg">
@@ -41,7 +38,7 @@
 						</div>
 						<div th:each="user : ${users}">
 						<div class="table-row">
-							<th scope="row">
+							
 							<div class="serial"><a th:href="@{/users/{id}(id=${user.id})}"><span th:text="${user.id}"></a></div>
 							<div class="country"><span th:text="${user.UserId}"></span></div>
 							<div class="visit"><td><span th:text="${user.name}"></span></div>
