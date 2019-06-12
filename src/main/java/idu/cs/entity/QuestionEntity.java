@@ -1,76 +1,89 @@
 package idu.cs.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import idu.cs.domain.Question;
 import idu.cs.domain.User;
 
 @Entity
-@Table(name = "user_table")
+@Table(name = "question")
 public class QuestionEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id; 
-	// database에서 sequence number, primary key 역할
-	@Column(nullable=false, length=20, unique=true)
-
-	private String userId;
-	private String userPw;
-	private String name;
-	private String company;
+	// database에서 sequence number, auto increment => primary key 역할
 	
-	public String getUserId() {
-		return userId;
+	private String title;
+	
+	@ManyToOne
+	@JoinColumn(name="fk_question_writer")
+	private UserEntity writer;
+	
+	@Lob
+	private String contents;
+	private LocalDateTime createTime;
+	
+	public Question buildDomain() { // Domain 생성
+		Question question = new Question();
+		question.setId(id);
+		question.setTitle(title);
+		question.setWriter(writer.buildDomain());
+		question.setContents(contents);
+		question.setCreateTime(createTime);
+		return question;
 	}
-	public void setUserId(String userid) {
-		this.userId = userid;
+	
+	public void buildEntity(Question question) {
+		id = question.getId();
+		title = question.getTitle();
+		
+		UserEntity entity = new UserEntity();
+		entity.buildEntity(question.getWriter());
+		writer = entity;
+		
+		contents = question.getContents();
+		createTime = question.getCreateTime();
 	}
-	public String getUserPw() {
-		return userPw;
-	}
-	public void setUserPw(String userpw) {
-		this.userPw = userpw;
-	}
+	
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getName() {
-		return name;
+	public String getTitle() {
+		return title;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setTitle(String title) {
+		this.title = title;
 	}
-	public String getCompany() {
-		return company;
+	public UserEntity getWriter() {
+		return writer;
 	}
-	public void setCompany(String company) {
-		this.company = company;
+	public void setWriter(UserEntity writer) {
+		this.writer = writer;
 	}
-	
-	public Question buildDomain() { // Entity -> Domain
-		Question question = new Question();
-		question.setId(id);
-		question.setUserId(userId);
-		question.setUserPw(userPw);
-		question.setName(name);
-		question.setCompany(company);
-		return question;
+	public String getContents() {
+		return contents;
 	}
-	
-	public void buildEntity(User user) { // Domain -> Entity
-		id = user.getId();
-		userId = user.getUserId();
-		userPw = user.getUserPw();
-		name = user.getName();
-		company = user.getCompany();
+	public void setContents(String contents) {
+		this.contents = contents;
+	}
+	public LocalDateTime getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(LocalDateTime createTime) {
+		this.createTime = createTime;
 	}
 	
 }
